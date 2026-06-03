@@ -17,7 +17,8 @@ Repository : [github.com/Nowalityy/tpdevops](https://github.com/Nowalityy/tpdevo
 |---------|--------|
 | **À faire** | CI/CD GitHub Actions, monitoring |
 | **En cours** | — |
-| **Terminé** | Exo 1–3 Docker basics, Todo API CRUD, PostgreSQL, volumes, tests |
+| **Terminé** | Partie 1 (exos 1–4), Partie 2 (networks, .env, healthchecks, optimisation) |
+| **À faire** | CI/CD GitHub Actions |
 
 Suivi recommandé : [GitHub Projects](https://github.com/Nowalityy/tpdevops/projects) (tableau Kanban).
 
@@ -36,10 +37,14 @@ Suivi recommandé : [GitHub Projects](https://github.com/Nowalityy/tpdevops/proj
 │   └── integration/api.test.js
 ├── scripts/
 │   ├── exo1-verification.sh
-│   └── exo3-volumes.sh
+│   ├── exo3-volumes.sh
+│   └── partie2/
+├── exercises/debug/
 ├── server.js
 ├── Dockerfile
+├── Dockerfile.unoptimized
 ├── docker-compose.yml
+├── .env.example
 └── package.json
 ```
 
@@ -61,6 +66,8 @@ Suivi recommandé : [GitHub Projects](https://github.com/Nowalityy/tpdevops/proj
 | Méthode | Route | Description |
 |---------|-------|-------------|
 | GET | `/health` | Santé de l'API |
+| GET | `/config` | Variables d'environnement (Partie 2) |
+| GET | `/db-test` | Test connexion PostgreSQL (Partie 2) |
 | POST | `/api/tasks` | Créer une tâche |
 | GET | `/api/tasks` | Lister toutes les tâches |
 | GET | `/api/tasks/:id` | Voir une tâche |
@@ -75,6 +82,7 @@ Suivi recommandé : [GitHub Projects](https://github.com/Nowalityy/tpdevops/proj
 ## Lancer le projet (Docker Compose)
 
 ```bash
+cp .env.example .env   # puis adapter les valeurs
 docker compose build
 docker compose up -d
 ```
@@ -174,6 +182,52 @@ Les données stockées dedans sont perdues définitivement.
 
 **Pourquoi `./src:/app/src` n'est pas dans `volumes:` en bas ?**  
 C'est un bind mount (chemin hôte → conteneur), pas un volume nommé géré par Docker.
+
+## Partie 2 — Approfondissement Docker
+
+### Exercice guidé 1 — Network custom
+
+```bash
+bash scripts/partie2/exo1-network-custom.sh
+```
+
+### Exercice guidé 2 — Networks dans compose
+
+```bash
+bash scripts/partie2/exo2-network-compose.sh
+docker compose -f docker-compose.networks-demo.yml down
+```
+
+La stack principale utilise `frontend` + `backend` : l'API est sur les deux, PostgreSQL uniquement sur `backend` (non exposé à l'hôte).
+
+### Exercices guidés — Variables d'environnement
+
+```bash
+cp .env.example .env
+docker compose up -d
+curl http://localhost:3000/config
+```
+
+### Exercice guidé — Expose vs ports
+
+- API : `ports: "3000:3000"` (accessible depuis l'hôte)
+- PostgreSQL : **pas de `ports`** (accessible uniquement via le réseau Docker)
+- Test : `curl http://localhost:3000/db-test` OK, `psql -h localhost` échoue (normal)
+
+Pour exposer la BDD en debug : voir `docker-compose.debug-db.yml`.
+
+### Exercices pratiques 3–5 — Debug et optimisation
+
+```bash
+# Dockerfiles cassés (exercice 3)
+docker build -f exercises/debug/Dockerfile.3-broken -t debug-3 .
+
+# Compose cassé (exercice 4) — corriger DB_HOST=db dans le fichier principal
+docker compose -f exercises/debug/docker-compose-broken.yml config
+
+# Challenge optimisation (exercice 5)
+bash scripts/partie2/compare-image-sizes.sh
+```
 
 ## Auteur
 
