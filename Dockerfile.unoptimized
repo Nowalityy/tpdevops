@@ -1,0 +1,12 @@
+# Version non optimisée — Exercice pratique 5 (comparaison de taille)
+FROM node:18
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

@@ -1,0 +1,7 @@
+# Exercice pratique 3 — Dockerfile #2 (mauvais ordre COPY = cache invalidé)
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD ["node", "server.js"]
