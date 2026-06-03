@@ -18,7 +18,6 @@ Repository : [github.com/Nowalityy/tpdevops](https://github.com/Nowalityy/tpdevo
 | **À faire** | CI/CD GitHub Actions, monitoring |
 | **En cours** | — |
 | **Terminé** | Partie 1 (exos 1–4), Partie 2 (networks, .env, healthchecks, optimisation) |
-| **À faire** | CI/CD GitHub Actions |
 
 Suivi recommandé : [GitHub Projects](https://github.com/Nowalityy/tpdevops/projects) (tableau Kanban).
 
