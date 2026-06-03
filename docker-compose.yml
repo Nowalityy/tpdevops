@@ -1,0 +1,16 @@
+# Exercice 3 — volume partagé (todo-logs)
+# Créer le volume avant : docker volume create todo-logs
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - todo-logs:/data
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  todo-logs:
+    external: true
