@@ -2,42 +2,55 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
     volumes:
       - ./src:/app/src
       - api-logs:/app/logs
-    environment:
-      - NODE_ENV=development
-      - DB_HOST=db
-      - DB_PORT=5432
-      - POSTGRES_DB=todo_db
-      - POSTGRES_USER=todo_user
-      - POSTGRES_PASSWORD=todo_pass
+    networks:
+      - frontend
+      - backend
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
   db:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: todo_db
-      POSTGRES_USER: todo_user
-      POSTGRES_PASSWORD: todo_pass
+      POSTGRES_DB: ${POSTGRES_DB:-todo_db}
+      POSTGRES_USER: ${POSTGRES_USER:-todo_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todo_pass}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
+    networks:
+      - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U todo_user -d todo_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-todo_user} -d ${POSTGRES_DB:-todo_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
-    # Pas d'exposition hôte :6379 (évite conflit avec autres projets)
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
 
 volumes:
   postgres-data:

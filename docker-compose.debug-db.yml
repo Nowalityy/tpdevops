@@ -1,0 +1,12 @@
+# Partie 2 — Exercice expose vs ports : BDD exposée temporairement pour debug
+# Usage : remplacer le service db par cette config ou merger les ports
+
+services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-todo_db}
+      POSTGRES_USER: ${POSTGRES_USER:-todo_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todo_pass}

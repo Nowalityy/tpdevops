@@ -1,0 +1,5 @@
+# Override pour tests locaux : expose PostgreSQL sur 5433
+services:
+  db:
+    ports:
+      - "5433:5432"
