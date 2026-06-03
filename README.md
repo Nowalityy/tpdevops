@@ -2,7 +2,6 @@
 
 Projet DevOps : fondations Docker, API Node.js dockerisée, volumes partagés.
 
-> Les exercices 4+ (Todo API complète, PostgreSQL) ne sont pas inclus dans ce dépôt.
 
 ## Prérequis
 
