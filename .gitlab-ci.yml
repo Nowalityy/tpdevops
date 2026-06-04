@@ -1,0 +1,23 @@
+stages:
+  - test
+  - build
+  - deploy
+
+.node-base:
+  image: node:18-alpine
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+  before_script:
+    - npm ci
+
+test-unit:
+  extends: .node-base
+  stage: test
+  variables:
+    SKIP_DB_TESTS: "1"
+  script:
+    - npm test
