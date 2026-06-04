@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node --test tests/unit/task.test.js tests/integration/api.test.js"
+    "test": "node --test tests/unit/task.test.js tests/integration/api.test.js",
+    "test:integration": "node --test tests/integration/api.test.js"
   },
   "engines": {
     "node": ">=18"
